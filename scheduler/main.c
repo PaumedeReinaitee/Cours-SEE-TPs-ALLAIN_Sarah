@@ -32,14 +32,15 @@ uint64_t get_time_ms(void) {
 void task_register(const char *name, uint32_t period_ms, uint32_t max_runs, void (*func)(void)) {
     // !!! Check max tasks
     if(task_count >= MAX_TASKS){
+        printf("erreur, max atteint");
         return;
     }
     // register a task
     task_t t1 = {.name = name,.period_ms = period_ms,.max_runs = max_runs,.run_count = 0,.last_run_ms = get_time_ms(),.func = func};
     printf("Tâche : %s, période : %d ms, max : %d, run : %d, denrier run : %llu, func : %p\n", t1.name, t1.period_ms, t1.max_runs, t1.run_count, t1.last_run_ms, t1.func);   
+    tasks[task_count] = t1;
     task_count = task_count+1;
     // TODO
-
 }
 
 void task_1_handler(void) {
