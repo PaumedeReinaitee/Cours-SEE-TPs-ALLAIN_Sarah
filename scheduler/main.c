@@ -20,7 +20,13 @@ static int task_count = 0;
 
 uint64_t get_time_ms(void) {
     // TODO: return current time
-    return 0;
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    uint64_t darwin_time_t_ms = (uint64_t)ts.tv_sec * 1000;
+    uint64_t long_ms = (uint64_t)ts.tv_nsec / 1000000;
+    uint64_t test = darwin_time_t_ms + long_ms;
+    printf("Valeur : %llu\n", test);
+    return darwin_time_t_ms + long_ms;
 }
 
 void task_register(const char *name, uint32_t period_ms, uint32_t max_runs, void (*func)(void)) {
@@ -42,6 +48,7 @@ int main(void) {
     task_register("LoggerTask", 500, 2, task_2_handler); // Runs 2 time
 
     while (true) {
+        get_time_ms();
         // TODO: complete the loop
     }
 
