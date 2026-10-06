@@ -25,7 +25,7 @@ uint64_t get_time_ms(void) {
     uint64_t darwin_time_t_ms = (uint64_t)ts.tv_sec * 1000;
     uint64_t long_ms = (uint64_t)ts.tv_nsec / 1000000;
     uint64_t test = darwin_time_t_ms + long_ms;
-    printf("Valeur : %llu\n", test);
+    //printf("Valeur : %llu\n", test);
     return darwin_time_t_ms + long_ms;
 }
 
@@ -55,10 +55,19 @@ int main(void) {
     task_register("SensorTask", 100, 12, task_1_handler); // Runs 12 times
     task_register("LoggerTask", 500, 2, task_2_handler); // Runs 2 time
 
-    while (true) {
-        //get_time_ms();
-        // TODO: complete the loop
-    }
+while (true) {
 
+        uint64_t time_actual = get_time_ms();
+
+        for (int i = 0; i < task_count; i++) {
+            if (tasks[i].run_count < tasks[i].max_runs) {
+                if (time_actual - tasks[i].last_run_ms >= tasks[i].period_ms) {
+                    tasks[i].func();
+                    tasks[i].run_count++;
+                    tasks[i].last_run_ms = time_actual;
+                }
+            }
+        }
+    }
     return 0;
 }
